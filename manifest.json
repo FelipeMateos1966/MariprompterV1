@@ -1,20 +1,25 @@
 {
-  "short_name": "Mariprompter",
-  "name": "Mariprompter PWA",
+  "name": "Mariprompter",
+  "short_name": "Prompter",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4a6de5",
   "icons": [
     {
-      "src": "images/icon-192.png",
-      "type": "image/png",
-      "sizes": "192x192"
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
     },
     {
-      "src": "images/icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/apple-icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
     }
-  ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  ]
 }
