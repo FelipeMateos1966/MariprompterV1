@@ -4,8 +4,8 @@ const urlsToCache = [
   'index.html',
   'manifest.json',
   // Agrega aquí todas las rutas a tus iconos
-  'icons/icon-192.png',
-  'icons/icon-512.png',
+  'images/icon-192.png',
+  'images/icon-512.png',
   // Si tu CSS es externo, añade su ruta (actualmente está inline, lo cual está bien)
   // Si tu JS es externo (aparte del service worker), añade su ruta
 ];
