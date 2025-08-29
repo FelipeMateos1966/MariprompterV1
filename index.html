@@ -1,403 +1,398 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mariprompter - Teleprompter Web</title>
 
-  <!-- Colores del tema -->
+  <!-- Colores del tema para PWA (Android) -->
   <meta name="theme-color" content="#000000">
 
   <!-- Manifest para PWA -->
   <link rel="manifest" href="manifest.json">
 
-  <style>
-    body {
-      background-color: white; /* Fondo blanco para toda la app */
-    }
-  </style>
-</head>
-<body>
+  <!-- Configuración para iOS (Apple) "Add to Home Screen" -->
+  <!-- Asegúrate de que 'icons/apple-icon-180.png' sea la ruta correcta a tu icono -->
+  <link rel="apple-touch-icon" href="icons/apple-icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Mariprompter">
 
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mariprompter - Teleprompter Web</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+  <style>
+    /* Estilos CSS combinados de ambas secciones <style> */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #4a6de5 0%, #2575fc 100%); /* Este es el fondo principal */
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        color: #333;
+        transition: all 0.3s ease;
+    }
+    
+    header {
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        z-index: 100;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        flex: 1;
+        transition: all 0.3s ease;
+    }
+    
+    .editor-section, .display-section, .instructions {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .section-header {
+        background-color: #4a6de5;
+        color: white;
+        padding: 15px 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+    
+    .editor-content {
+        padding: 20px;
+    }
+    
+    #script-text {
+        width: 100%;
+        height: 200px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        resize: vertical;
+        line-height: 1.6;
+        transition: all 0.3s ease;
+    }
+    
+    .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-top: 1px solid #eee;
+    }
+    
+    button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        background-color: #4a6de5;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    button:hover {
+        background-color: #3a5bd5;
+        transform: translateY(-2px);
+    }
+    
+    button:active {
+        transform: translateY(0);
+    }
+    
+    button.stop {
+        background-color: #e74c3c;
+    }
+    
+    button.stop:hover {
+        background-color: #c0392b;
+    }
+    
+    button.play {
+        background-color: #2ecc71;
+    }
+    
+    button.play:hover {
+        background-color: #27ae60;
+    }
+    
+    button.continue {
+        background-color: #3498db;
+    }
+    
+    button.continue:hover {
+        background-color: #2980b9;
+    }
+    
+    .settings {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0 15px;
+    }
+    
+    .settings label {
+        font-size: 14px;
+        color: #555;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    input[type="range"], select {
+        accent-color: #4a6de5;
+    }
+    
+    select {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background: white;
+    }
+    
+    .display-content {
+        height: 400px;
+        overflow: hidden;
+        position: relative;
+        background-color: #000;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #prompter-display {
+        font-size: 32px;
+        line-height: 1.8;
+        text-align: center;
+        padding: 20px;
+        max-width: 90%;
+        opacity: 0;
+        transition: opacity 0.5s;
+    }
+    
+    #prompter-display.running {
+        animation: scrollText linear infinite;
+        opacity: 1;
+    }
+    
+    @keyframes scrollText {
+        from {
+            transform: translateY(100%);
         }
-        
-        body {
-            background: linear-gradient(135deg, #4a6de5 0%, #2575fc 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: #333;
-            transition: all 0.3s ease;
+        to {
+            transform: translateY(-100%);
         }
-        
-        header {
-            text-align: center;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-        
+    }
+    
+    .speed-value {
+        font-weight: bold;
+        color: #4a6de5;
+    }
+    
+    .instructions {
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .instructions h3 {
+        color: #4a6de5;
+        margin-bottom: 10px;
+    }
+    
+    .instructions ul {
+        padding-left: 20px;
+        line-height: 1.8;
+    }
+    
+    footer {
+        text-align: center;
+        padding: 20px;
+        color: white;
+        font-size: 14px;
+        margin-top: auto;
+        transition: all 0.3s ease;
+    }
+    
+    /* Modo pantalla completa */
+    .fullscreen-mode {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+    }
+    
+    .fullscreen-mode .container {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        width: 100vw;
+    }
+    
+    .fullscreen-mode header,
+    .fullscreen-mode .editor-section,
+    .fullscreen-mode .instructions,
+    .fullscreen-mode footer {
+        display: none;
+    }
+    
+    .fullscreen-mode .display-section {
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+    }
+    
+    .fullscreen-mode .display-content {
+        height: 100vh;
+    }
+    
+    .fullscreen-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 60px;
+        background-color: #4a6de5;
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        z-index: 1001;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .fullscreen-header .title {
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    .fullscreen-header .buttons {
+        display: flex;
+        gap: 10px;
+    }
+    
+    .fullscreen-header button {
+        padding: 8px 12px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    }
+    
+    .fullscreen-header button.play {
+        background-color: #2ecc71;
+        color: white;
+    }
+    
+    .fullscreen-header button.pause {
+        background-color: #3498db;
+        color: white;
+    }
+    
+    .fullscreen-header button.continue {
+        background-color: #3498db;
+        color: white;
+    }
+    
+    .fullscreen-header button.stop {
+        background-color: #e74c3c;
+        color: white;
+    }
+    
+    .fullscreen-header button.exit {
+        background-color: #7f8c8d;
+        color: white;
+    }
+    
+    .fullscreen-header button:hover {
+        transform: translateY(-2px);
+    }
+    
+    .fullscreen-mode .fullscreen-header {
+        display: flex;
+    }
+    
+    @media (max-width: 768px) {
         h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
+            font-size: 2rem;
         }
         
         .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            flex: 1;
-            transition: all 0.3s ease;
-        }
-        
-        .editor-section, .display-section, .instructions {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .section-header {
-            background-color: #4a6de5;
-            color: white;
-            padding: 15px 20px;
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-        
-        .editor-content {
-            padding: 20px;
-        }
-        
-        #script-text {
-            width: 100%;
-            height: 200px;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-            resize: vertical;
-            line-height: 1.6;
-            transition: all 0.3s ease;
-        }
-        
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 15px;
-            background-color: #f8f9fa;
-            border-top: 1px solid #eee;
-        }
-        
-        button {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            background-color: #4a6de5;
-            color: white;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        button:hover {
-            background-color: #3a5bd5;
-            transform: translateY(-2px);
-        }
-        
-        button:active {
-            transform: translateY(0);
-        }
-        
-        button.stop {
-            background-color: #e74c3c;
-        }
-        
-        button.stop:hover {
-            background-color: #c0392b;
-        }
-        
-        button.play {
-            background-color: #2ecc71;
-        }
-        
-        button.play:hover {
-            background-color: #27ae60;
-        }
-        
-        button.continue {
-            background-color: #3498db;
-        }
-        
-        button.continue:hover {
-            background-color: #2980b9;
-        }
-        
-        .settings {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-            padding: 0 15px;
-        }
-        
-        .settings label {
-            font-size: 14px;
-            color: #555;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        input[type="range"], select {
-            accent-color: #4a6de5;
-        }
-        
-        select {
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-        }
-        
-        .display-content {
-            height: 400px;
-            overflow: hidden;
-            position: relative;
-            background-color: #000;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 1rem;
         }
         
         #prompter-display {
-            font-size: 32px;
-            line-height: 1.8;
-            text-align: center;
-            padding: 20px;
-            max-width: 90%;
-            opacity: 0;
-            transition: opacity 0.5s;
+            font-size: 24px;
         }
         
-        #prompter-display.running {
-            animation: scrollText linear infinite;
-            opacity: 1;
+        .display-content {
+            height: 300px;
         }
         
-        @keyframes scrollText {
-            from {
-                transform: translateY(100%);
-            }
-            to {
-                transform: translateY(-100%);
-            }
+        .controls {
+            flex-direction: column;
         }
         
-        .speed-value {
-            font-weight: bold;
-            color: #4a6de5;
-        }
-        
-        .instructions {
-            background-color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        .instructions h3 {
-            color: #4a6de5;
-            margin-bottom: 10px;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-            line-height: 1.8;
-        }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: white;
-            font-size: 14px;
-            margin-top: auto;
-            transition: all 0.3s ease;
-        }
-        
-        /* Modo pantalla completa */
-        .fullscreen-mode {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-        }
-        
-        .fullscreen-mode .container {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-        }
-        
-        .fullscreen-mode header,
-        .fullscreen-mode .editor-section,
-        .fullscreen-mode .instructions,
-        .fullscreen-mode footer {
-            display: none;
-        }
-        
-        .fullscreen-mode .display-section {
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            height: 100vh;
-            border-radius: 0;
-        }
-        
-        .fullscreen-mode .display-content {
-            height: 100vh;
+        .settings {
+            justify-content: center;
         }
         
         .fullscreen-header {
-            position: fixed;
             top: 0;
-            left: 0;
-            right: 0;
-            height: 60px;
-            background-color: #4a6de5;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 20px;
-            z-index: 1001;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            padding: 0 10px;
         }
         
         .fullscreen-header .title {
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        
-        .fullscreen-header .buttons {
-            display: flex;
-            gap: 10px;
+            font-size: 16px;
         }
         
         .fullscreen-header button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+            font-size: 12px;
+            padding: 6px 8px;
         }
-        
-        .fullscreen-header button.play {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .fullscreen-header button.pause {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .fullscreen-header button.continue {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .fullscreen-header button.stop {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .fullscreen-header button.exit {
-            background-color: #7f8c8d;
-            color: white;
-        }
-        
-        .fullscreen-header button:hover {
-            transform: translateY(-2px);
-        }
-        
-        .fullscreen-mode .fullscreen-header {
-            display: flex;
-        }
-        
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
-            
-            #prompter-display {
-                font-size: 24px;
-            }
-            
-            .display-content {
-                height: 300px;
-            }
-            
-            .controls {
-                flex-direction: column;
-            }
-            
-            .settings {
-                justify-content: center;
-            }
-            
-            .fullscreen-header {
-                top: 0;
-                padding: 0 10px;
-            }
-            
-            .fullscreen-header .title {
-                font-size: 16px;
-            }
-            
-            .fullscreen-header button {
-                font-size: 12px;
-                padding: 6px 8px;
-            }
-        }
-    </style>
+    }
+  </style>
 </head>
 <body>
     <header>
@@ -660,24 +655,14 @@ Puedes ajustar la velocidad, el tamaño del texto y el color para adaptarlo a tu
             updatePrompterText();
         });
     </script>
-<script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js")
-    .then(() => console.log("Service Worker registrado"))
-    .catch(err => console.error("Error al registrar Service Worker:", err));
-}
-</script>
+
+    <!-- Script de registro del Service Worker (va al final del body) -->
+    <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker registrado"))
+        .catch(err => console.error("Error al registrar Service Worker:", err));
+    }
+    </script>
 </body>
 </html>
-
-</body>
-</html>
-
-
-    
-              <script>
-                              
-              </script>
-                        </body>
-                        </html>
-                    
