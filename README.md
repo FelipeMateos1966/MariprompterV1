@@ -1,6 +1,6 @@
 # 🦋 Mariprompter - Tu Teleprompter Web Gratuito
 
-![Captura de Pantalla de Mariprompter](ruta/a/una/captura-de-pantalla.png)
+![Captura de Pantalla de Mariprompter V.1](ruta/a/una/captura-de-pantalla.png)
 *(Opcional: Una captura de pantalla o GIF de tu PWA en acción es muy útil)*
 
 ## Descripción
